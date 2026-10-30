@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="离线交互式傅里叶实验室：观察正弦波叠加、频谱，以及旋转圆重绘手绘轮廓的过程。">
+<title>看见傅里叶 · 波形与旋转圆</title>
+<style>
+:root{--blue:#002fa7;--ink:#17191e;--muted:#686e79;--line:#dfe2e8;--paper:#f7f7f8;--white:#fff;font-family:"Helvetica Neue",Helvetica,Arial,"Microsoft YaHei",sans-serif;color:var(--ink);background:var(--paper);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #7396ee;outline-offset:4px}button{border:1px solid var(--line);background:var(--white);color:var(--ink);padding:10px 14px;min-height:40px;transition:background .18s,color .18s,border-color .18s}button:hover{background:#eef1f9;border-color:#b8c5e9}button:disabled{opacity:.4;cursor:default}button.primary{background:var(--blue);color:white;border-color:var(--blue)}button.primary:hover{background:#002586}button svg{width:16px;height:16px;vertical-align:-3px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:1.6}button svg.fill{fill:currentColor;stroke:none}.shell{max-width:1500px;margin:auto;padding:0 48px}.topbar{height:84px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:17px;font-weight:700;letter-spacing:.04em;display:flex;align-items:center;gap:12px}.brand svg{width:38px;height:26px;stroke:var(--blue);fill:none;stroke-width:2}.top-links{display:flex;gap:25px;align-items:center;font-size:12px;color:var(--muted)}.top-links a{text-decoration:none}.top-links a:hover{color:var(--blue)}.local-dot{display:inline-block;background:var(--blue);width:5px;height:5px;border-radius:50%;margin-right:7px}.intro{padding:43px 0 35px;display:flex;align-items:end;justify-content:space-between;gap:24px}.eyebrow{font-size:12px;color:var(--blue);margin:0 0 14px;letter-spacing:.12em}h1{font-size:clamp(32px,4.4vw,57px);letter-spacing:-.055em;font-weight:500;line-height:1.18;margin:0 0 15px}h1 span{color:var(--blue)}.subtitle{font-size:14px;line-height:1.8;color:var(--muted);margin:0}.intro-equation{font:italic 29px Georgia,"Times New Roman",serif;letter-spacing:-.04em;padding-bottom:7px;white-space:nowrap;color:#808797}.intro-equation b{font-weight:400;color:var(--blue)}.modebar{display:flex;border-bottom:1px solid var(--line);align-items:center;justify-content:space-between;gap:16px}.tabs{display:flex;gap:28px}.tab{padding:17px 0;border:0;border-bottom:3px solid transparent;background:transparent;font-size:14px;white-space:nowrap}.tab:hover{background:transparent;color:var(--blue)}.tab[aria-selected="true"]{border-bottom-color:var(--blue);color:var(--blue);font-weight:600}.tab small{font:11px Arial,sans-serif;color:var(--muted);margin-right:7px}.hint{font-size:11px;color:var(--muted)}.experiment{background:var(--white);border:1px solid var(--line);border-top:0}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 282px}.visual{min-width:0;position:relative}.stage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:21px 25px 0}.stage-head h2{font-size:14px;font-weight:500;margin:0}.stage-head .stage-meta{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}.stage-wrap{position:relative;margin:0 8px}.stage-wrap canvas{display:block;width:100%;height:365px;touch-action:pan-y}.stage-wrap.drawing canvas{touch-action:none;cursor:crosshair}.draw-message{position:absolute;top:18px;left:20px;right:20px;padding:10px 12px;background:#edf2ff;border:1px solid #b6c8ef;color:var(--blue);font-size:12px;line-height:1.6;pointer-events:none;display:none}.drawing .draw-message{display:block}.chart-legend{display:flex;gap:17px;align-items:center;justify-content:center;font-size:11px;color:var(--muted);padding:0 10px 20px;flex-wrap:wrap}.legend-item{display:inline-flex;align-items:center;gap:7px}.legend-line{width:20px;border-top:2px solid var(--blue)}.legend-line.target{border-color:#9ca4b1;border-top-style:dashed}.legend-line.component{border-color:#a5b7e3;border-top-width:1px}.formula-bar{margin:0 24px;border-top:1px solid var(--line);padding:17px 0;display:flex;align-items:center;justify-content:space-between;gap:14px}.formula{font:17px Georgia,"Times New Roman",serif;color:var(--blue);line-height:1.6;overflow-wrap:anywhere}.formula-label{display:block;font:10px "Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;color:var(--muted);margin-bottom:5px}.phase-readout{font:12px "Courier New",monospace;color:var(--muted);white-space:nowrap}.sidebar{padding:22px 22px 19px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:23px}.control-heading{font-size:11px;color:var(--muted);margin:0 0 11px}.presets{display:grid;grid-template-columns:1fr 1fr;gap:7px}.preset{font-size:12px;min-height:60px;padding:9px 6px;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center}.preset svg{margin:0;width:44px;height:15px;stroke-width:1.3}.preset[aria-pressed="true"]{color:var(--blue);background:#f0f3fc;border-color:var(--blue)}.control-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:12px;gap:8px}.control-top output{font-variant-numeric:tabular-nums;color:var(--blue);font-size:20px}.control-top output small{font-size:11px;color:var(--muted);margin-left:3px}.range{width:100%;height:5px;accent-color:var(--blue);cursor:pointer;margin:9px 0}.range-ends{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:7px}.speed-line{display:flex;align-items:center;gap:12px}.speed-line select{flex:1;min-width:0;border:1px solid var(--line);padding:8px;background:white;color:var(--ink);font-size:12px}.toggles{display:flex;flex-direction:column;gap:13px;font-size:12px}.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}.toggle input{accent-color:var(--blue);width:15px;height:15px;margin:0;cursor:pointer}.note{margin:0;font-size:11px;color:var(--muted);line-height:1.85}.side-note{border-top:1px solid var(--line);padding-top:14px;margin-top:auto}.draw-actions{display:flex;gap:7px;flex-wrap:wrap}.draw-actions button{font-size:11px;flex:1;padding:8px 5px}.transport{border-top:1px solid var(--line);padding:16px 23px;display:grid;grid-template-columns:auto minmax(80px,1fr) auto;gap:22px;align-items:center}.transport-buttons{display:flex;gap:7px}.transport-buttons button{font-size:12px;min-width:42px}.transport-buttons .primary{min-width:85px}.timeline-group{display:flex;align-items:center;gap:12px;min-width:0}.timeline-group label{font-size:10px;white-space:nowrap;color:var(--muted)}#progress{flex:1;min-width:20px}.progress-readout{font:11px "Courier New",monospace;color:var(--blue);width:34px;text-align:right}.save-button{font-size:11px}.analysis-grid{display:grid;grid-template-columns:minmax(0,1.24fr) minmax(0,1fr);gap:0;border:1px solid var(--line);border-top:0;background:white}.analysis-panel{padding:23px 25px 19px;min-width:0}.analysis-panel+.analysis-panel{border-left:1px solid var(--line)}.section-head{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:7px}.section-head h2{font-size:13px;font-weight:500;margin:0}.section-head p{font-size:10px;color:var(--muted);margin:6px 0 0}.metric{text-align:right;font-size:10px;color:var(--muted);white-space:nowrap}.metric strong{font-weight:400;color:var(--blue);font-size:23px;display:block;line-height:1.35;font-variant-numeric:tabular-nums}.spectrum-wrap{position:relative}#spectrum{width:100%;height:185px;display:block;touch-action:pan-y}.spectrum-detail{min-height:21px;font-size:10px;line-height:1.7;color:var(--muted);margin:2px 0 0}.harmonics{display:flex;flex-direction:column;gap:0;margin-top:13px}.harmonic-row{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center;min-height:41px;border-top:1px solid #eef0f4}.harmonic-row:first-child{border-top:0}.harmonic-caption{font-size:10px;line-height:1.65;color:var(--muted);font-variant-numeric:tabular-nums}.harmonic-caption b{font-weight:500;color:var(--ink);font-size:11px}.harmonic-mini{width:100%;height:36px;display:block}.principles{padding:45px 0 30px}.principles-head{display:flex;align-items:center;gap:15px;margin-bottom:21px}.principles-head h2{font-size:18px;font-weight:500;margin:0}.principles-head span{font-size:11px;color:var(--muted)}.steps{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}.step{padding:23px 24px 0 0;min-width:0}.step+.step{border-left:1px solid var(--line);padding-left:24px}.step-num{font:11px "Courier New",monospace;color:var(--blue)}.step h3{font-size:14px;font-weight:500;margin:12px 0 10px}.step p{font-size:12px;line-height:1.95;color:var(--muted);margin:0}.step-equation{font:16px Georgia,"Times New Roman",serif;margin-top:14px;line-height:1.7;color:var(--blue);overflow-wrap:anywhere}.footnote{margin:25px 0 0;font-size:11px;line-height:1.9;color:var(--muted);padding:14px 0;border-top:1px solid var(--line)}footer{border-top:1px solid var(--line);padding:22px 0 27px;display:flex;justify-content:space-between;gap:15px;font-size:10px;color:var(--muted)}[hidden]{display:none!important}#status{min-height:0}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(min-width:1350px){.stage-wrap canvas{height:400px}.sidebar{padding:24px 25px}.workspace{grid-template-columns:minmax(0,1fr) 295px}}
+@media(max-width:1050px){.shell{padding:0 25px}.workspace{grid-template-columns:minmax(0,1fr) 245px}.sidebar{padding:20px 17px;gap:20px}.intro-equation{font-size:23px}.transport{gap:13px;padding:14px 18px}.transport .save-button{padding:10px}.analysis-panel{padding:21px 20px}.harmonic-row{grid-template-columns:105px minmax(0,1fr)}}
+@media(max-width:780px){.shell{padding:0 18px}.topbar{height:67px}.top-links{gap:15px}.intro{padding:30px 0 25px}.intro-equation{display:none}.subtitle{font-size:12px}.workspace{grid-template-columns:1fr}.sidebar{border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:20px 25px;padding:20px}.sidebar .presets-section{grid-row:span 2}.side-note{margin:0;padding-top:10px;grid-column:1/-1}.toggle-section{grid-column:2}.toggles{gap:11px}.analysis-grid{grid-template-columns:1fr 1fr}.stage-wrap canvas{height:365px}.formula-bar{margin:0 20px}.analysis-panel{padding:20px 16px}.harmonic-row{grid-template-columns:88px minmax(0,1fr)}.harmonic-caption b{font-size:10px}.harmonic-caption{font-size:9px}.steps{grid-template-columns:1fr}.step{padding:20px 0!important}.step+.step{border-left:0;border-top:1px solid var(--line)}.step h3{display:inline-block;margin:0 0 9px 14px}.step-equation{margin-top:8px}.principles{padding-top:32px}}
+@media(max-width:540px){.shell{padding:0 12px}.brand{font-size:14px;gap:8px}.brand svg{width:31px}.top-links{font-size:10px}.top-links .local-status{display:none}h1{font-size:35px}.intro{padding:27px 0 23px}.eyebrow{font-size:10px}.tabs{gap:24px}.tab{font-size:12px;padding:15px 0}.modebar .hint{display:none}.stage-head{padding:18px 16px 0}.stage-head h2{font-size:12px}.stage-head .stage-meta{font-size:9px}.stage-wrap canvas{height:485px}.stage-wrap{margin:0 3px}.chart-legend{font-size:9px;gap:12px;padding-bottom:14px}.formula-bar{align-items:start;margin:0 16px;padding:14px 0;gap:8px}.formula{font-size:14px}.phase-readout{font-size:10px;margin-top:20px}.sidebar{padding:17px 16px;gap:20px 18px}.control-top{font-size:11px}.control-top output{font-size:18px}.preset{font-size:11px;min-height:55px}.range-ends{font-size:9px}.speed-line{gap:8px}.speed-line select{font-size:11px}.toggle{font-size:11px}.transport{grid-template-columns:auto 1fr;padding:14px;gap:15px}.save-button{grid-column:1/-1;min-height:35px}.timeline-group{gap:7px}.timeline-group label{display:none}.analysis-grid{grid-template-columns:1fr}.analysis-panel+.analysis-panel{border-left:0;border-top:1px solid var(--line)}.harmonic-row{grid-template-columns:120px minmax(0,1fr)}.harmonic-caption{font-size:10px}.harmonic-caption b{font-size:11px}.section-head h2{font-size:12px}.principles-head{align-items:start;flex-direction:column;gap:8px}.principles-head h2{font-size:17px}footer{font-size:9px;flex-direction:column;gap:7px}.note{font-size:10px}.draw-message{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar"><div class="brand"><svg viewBox="0 0 42 28" aria-hidden="true"><path d="M1 14 C7 -3 14 -3 21 14 S35 31 41 14"/><path d="M1 14H41" opacity=".22" stroke-width="1"/></svg>傅里叶实验室</div><div class="top-links"><span class="local-status"><i class="local-dot"></i>离线可用</span><a href="#principles">了解原理</a><button id="fullscreen" type="button" style="border:0;background:transparent;font-size:11px;padding:8px 0;min-height:30px">全屏演示</button></div></header>
+<section class="intro"><div><p class="eyebrow">波形 · 频率 · 旋转</p><h1>复杂的波，<span>简单的和。</span></h1><p class="subtitle">拖动谐波项数，看一组旋转的向量如何叠加成波形，或逐笔重绘一条轮廓。</p></div><div class="intro-equation" aria-hidden="true">f(t) = <b>∑</b> Aₙ cos(nω₀t + φₙ)</div></section>
+<div class="modebar"><div class="tabs" role="tablist" aria-label="选择演示"><button id="wave-tab" class="tab" role="tab" aria-selected="true" aria-controls="experiment" type="button"><small>01</small>波形合成</button><button id="draw-tab" class="tab" role="tab" aria-selected="false" aria-controls="experiment" type="button"><small>02</small>旋转圆绘图</button></div><span class="hint">空格键播放 / 暂停</span></div>
+<main>
+<section id="experiment" class="experiment" role="tabpanel" aria-labelledby="wave-tab">
+<div class="workspace"><div class="visual"><div class="stage-head"><h2 id="stage-title">从旋转向量到方波</h2><span id="stage-meta" class="stage-meta">1 个周期 / 5 个谐波</span></div><div class="stage-wrap" id="stage-wrap"><canvas id="stage" role="img" aria-label="旋转圆与波形叠加动画。左边向量的纵向分量相加，右边描出合成波形。">浏览器需要支持 Canvas 才能显示动画。</canvas><div class="draw-message" id="draw-message">按住鼠标或手指画一笔轮廓，松开后自动计算并重绘。首尾会自动连成闭合曲线。</div></div><div class="chart-legend"><span class="legend-item"><i class="legend-line target"></i><span id="target-legend">目标方波</span></span><span class="legend-item"><i class="legend-line"></i><span id="result-legend">谐波叠加</span></span><span class="legend-item" id="component-legend"><i class="legend-line component"></i>单个谐波</span></div><div class="formula-bar"><div><span class="formula-label" id="formula-label">当前合成式 · 归一化幅值</span><div class="formula" id="formula"></div></div><div class="phase-readout" id="phase-readout">t / T = 0.00</div></div></div>
+<aside class="sidebar" aria-label="演示参数"><section class="presets-section"><p class="control-heading" id="preset-heading">选择目标波形</p><div class="presets" id="wave-presets"><button class="preset" data-wave="square" aria-pressed="true" type="button"><svg viewBox="0 0 48 16" aria-hidden="true"><path d="M0 13H10V3H24V13H38V3H48"/></svg>方波</button><button class="preset" data-wave="saw" aria-pressed="false" type="button"><svg viewBox="0 0 48 16" aria-hidden="true"><path d="M0 13L16 3V13L32 3V13L48 3"/></svg>锯齿波</button><button class="preset" data-wave="triangle" aria-pressed="false" type="button"><svg viewBox="0 0 48 16" aria-hidden="true"><path d="M0 8L8 2L24 14L40 2L48 8"/></svg>三角波</button><button class="preset" data-wave="pulse" aria-pressed="false" type="button"><svg viewBox="0 0 48 16" aria-hidden="true"><path d="M0 13H5V3H11V13H29V3H35V13H48"/></svg>脉冲波</button></div><div class="presets" id="draw-presets" hidden><button class="preset" data-shape="heart" aria-pressed="true" type="button"><svg viewBox="0 0 48 20" aria-hidden="true"><path d="M24 18C4 8 14 -3 24 6C34 -3 44 8 24 18Z"/></svg>心形</button><button class="preset" data-shape="star" aria-pressed="false" type="button"><svg viewBox="0 0 48 20" aria-hidden="true"><path d="M24 1L27 7L34 8L29 13L30 19L24 16L18 19L19 13L14 8L21 7Z"/></svg>五角星</button><button class="preset" data-shape="cat" aria-pressed="false" type="button"><svg viewBox="0 0 48 20" aria-hidden="true"><path d="M14 9L13 1L21 5Q24 4 27 5L35 1L34 9C40 22 8 22 14 9Z"/></svg>猫咪轮廓</button><button class="preset" data-shape="custom" aria-pressed="false" type="button"><svg viewBox="0 0 48 20" aria-hidden="true"><path d="M10 15C16 2 20 20 24 9S34 2 38 12"/></svg>自己画一笔</button></div></section>
+<section><label class="control-top" for="terms"><span id="terms-label">叠加的谐波项数</span><output for="terms" id="terms-output">5<small>项</small></output></label><input class="range" id="terms" type="range" min="1" max="32" value="5" step="1"><div class="range-ends"><span>更简单</span><span id="terms-end">更多细节 · 32 项</span></div></section>
+<section id="frequency-section"><label class="control-top" for="frequency"><span>基频 f₀</span><output for="frequency" id="frequency-output">0.5<small>Hz</small></output></label><input class="range" id="frequency" type="range" min="0.1" max="2" value="0.5" step="0.1"><div class="range-ends"><span>0.1 Hz</span><span>2.0 Hz</span></div></section>
+<section id="draw-actions-section" hidden><p class="control-heading">手绘输入</p><div class="draw-actions"><button id="redraw" type="button">重新画一笔</button><button id="cancel-draw" type="button" hidden>取消绘制</button></div><p class="note" style="margin-top:9px">轮廓按弧长均匀采样 256 点；每项对应一个正频率或负频率旋转向量。</p></section>
+<section class="toggle-section"><div class="speed-line"><label class="control-heading" for="speed" style="margin:0;white-space:nowrap">播放速度</label><select id="speed"><option value="0.25">0.25 ×</option><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option><option value="2">2 ×</option></select></div><div class="toggles" style="margin-top:18px"><label class="toggle" for="show-circles">显示旋转圆<input id="show-circles" type="checkbox" checked></label><label class="toggle" for="show-target">显示目标轮廓<input id="show-target" type="checkbox" checked></label><label class="toggle" for="show-components" id="components-toggle">显示单个谐波（前 8 项）<input id="show-components" type="checkbox" checked></label></div></section>
+<p class="note side-note" id="side-note">每个圆代表一个谐波。最后一个向量端点的纵坐标，就是这一时刻的叠加值。</p></aside></div>
+<div class="transport"><div class="transport-buttons"><button class="primary" id="play" type="button" aria-label="暂停动画"><svg class="fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3H6V13H4ZM10 3H12V13H10Z"/></svg><span>暂停</span></button><button id="restart" type="button" aria-label="从头播放" title="从头播放"><svg viewBox="0 0 16 16" style="margin:0" aria-hidden="true"><path d="M3 6A5.4 5.4 0 1 1 3 11M3 2V6H7"/></svg></button></div><div class="timeline-group"><label for="progress">周期进度</label><input class="range" id="progress" type="range" min="0" max="1000" value="0" step="1"><output class="progress-readout" id="progress-output" for="progress">0%</output></div><button id="save" class="save-button" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2V11M4 7L8 11L12 7M3 11V14H13V11"/></svg>保存画面</button></div>
+</section>
+<section class="analysis-grid" aria-label="频域与谐波细节"><div class="analysis-panel"><div class="section-head"><div><h2 id="spectrum-title">把波形拆成频率</h2><p id="spectrum-subtitle">柱高表示幅值，蓝色表示参与合成的谐波</p></div><div class="metric"><strong id="error-value">0.201</strong><span id="error-label">近似误差 RMS</span></div></div><div class="spectrum-wrap"><canvas id="spectrum" role="img" aria-label="谐波幅度谱，横轴为频率，纵轴为幅值。">谐波幅度谱</canvas></div><p class="spectrum-detail" id="spectrum-detail">移动鼠标或轻触频谱，查看各项的频率与幅值。</p></div><div class="analysis-panel"><div class="section-head"><div><h2 id="harmonics-title">从这些简单的波开始</h2><p id="harmonics-subtitle">前 4 个非零谐波 · 同一幅值比例</p></div></div><div class="harmonics" id="harmonics"></div></div></section>
+<section class="principles" id="principles"><div class="principles-head"><h2>一个过程，连接时域与频域。</h2><span>先分解，再用简单的运动重新构造。</span></div><div class="steps"><article class="step"><span class="step-num">01 / 分解</span><h3>找到频率与权重</h3><p>周期波形可以展开成傅里叶级数。本页波形使用解析系数；手绘轮廓则把横、纵坐标组成复数，通过离散傅里叶变换求出每项的幅值与相位。</p><div class="step-equation">cₖ = 1/N ∑ zⱼ e<sup>−i2πkj/N</sup></div></article><article class="step"><span class="step-num">02 / 旋转</span><h3>让每一项动起来</h3><p>幅值决定圆的半径，相位决定起点，频率决定转速。正、负频率的旋转方向相反。在波形模式中，取向量的纵向分量；绘图模式中，保留完整二维坐标。</p><div class="step-equation">cₖ e<sup>ikθ</sup> = |cₖ| e<sup>i(kθ+φₖ)</sup></div></article><article class="step"><span class="step-num">03 / 叠加</span><h3>端点留下复杂的轨迹</h3><p>把向量首尾相连，最后的端点就是当前的重建结果。提高项数通常会降低整体均方误差；方波跳变附近仍会保留过冲，这是吉布斯现象，过冲区域会逐渐变窄。</p><div class="step-equation">z(θ) ≈ ∑ cₖ e<sup>ikθ</sup></div></article></div><p class="footnote">这里演示的是周期信号的傅里叶级数，以及有限采样的 DFT 与重建。它们与连续傅里叶变换相联系，但不是同一个运算。波形幅值为归一化值；绘图频率以“转 / 周期”表示。手绘轨迹自动闭合，闭合段也会参与计算。</p></section>
+</main><footer><span>傅里叶实验室 / 在简单的旋转中，看见复杂的形状。</span><span>纯本地计算 · 无外部依赖 · 支持鼠标与触屏</span></footer><div id="status" class="sr-only" role="status" aria-live="polite"></div>
+</div>
+<script>
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  if (root) root.FourierMath = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const TAU = 2 * Math.PI;
+  const wrap = t => ((t % TAU) + TAU) % TAU;
+  const limit = (value, length) => Math.max(0, Math.min(length,
+    value === undefined ? length : Math.floor(value)));
+
+  function waveValue(type, t) {
+    const u = wrap(t);
+    const edge = 1e-12;
+    if (type === 'square') {
+      return Math.abs(Math.sin(u)) < edge ? 0 : (u < Math.PI ? 1 : -1);
+    }
+    if (type === 'saw') return u < edge || TAU - u < edge ? 0 : u / Math.PI - 1;
+    if (type === 'triangle') return 2 / Math.PI * Math.asin(Math.sin(u));
+    if (type === 'pulse') {
+      // 跳变点取左右极限的均值，与傅里叶级数的收敛值一致。
+      if (u < edge || TAU - u < edge || Math.abs(u - Math.PI / 2) < edge) return 0;
+      return u < Math.PI / 2 ? 1 : -1;
+    }
+    throw new RangeError('未知波形：' + type);
+  }
+
+  function waveComponents(type, maxHarmonic) {
+    if (!['square', 'saw', 'triangle', 'pulse'].includes(type)) {
+      throw new RangeError('未知波形：' + type);
+    }
+    const terms = [];
+    const maximum = Number.isFinite(maxHarmonic) ? Math.max(0, Math.floor(maxHarmonic)) : 0;
+    for (let frequency = 1; frequency <= maximum; frequency++) {
+      let a = 0, b = 0;
+      if (type === 'square' && frequency % 2) b = 4 / (Math.PI * frequency);
+      if (type === 'saw') b = -2 / (Math.PI * frequency);
+      if (type === 'triangle' && frequency % 2) {
+        b = 8 * (frequency % 4 === 1 ? 1 : -1) / (Math.PI ** 2 * frequency ** 2);
+      }
+      if (type === 'pulse') {
+        // 占空比 1/4：均值 -1/2，an=2sin(nπ/2)/(nπ)，bn=2(1-cos(nπ/2))/(nπ)。
+        const m = frequency % 4;
+        a = 2 * [0, 1, 0, -1][m] / (Math.PI * frequency);
+        b = 2 * (1 - [1, 0, -1, 0][m]) / (Math.PI * frequency);
+      }
+      const amplitude = Math.hypot(a, b);
+      if (amplitude > 1e-14) {
+        // 实值展开 a cos(kt)+b sin(kt)=A cos(kt+φ)，因此 im=-b。
+        terms.push({ frequency, amplitude, phase: Math.atan2(-b, a), re: a, im: -b });
+      }
+    }
+    return { dc: type === 'pulse' ? -0.5 : 0, terms };
+  }
+
+  function evaluateReal(model, t, termCount) {
+    let value = model.dc;
+    const n = limit(termCount, model.terms.length);
+    for (let i = 0; i < n; i++) {
+      const term = model.terms[i];
+      value += term.amplitude * Math.cos(term.frequency * t + term.phase);
+    }
+    return value;
+  }
+
+  function resampleClosed(points, count = 512) {
+    count = Number.isFinite(count) ? Math.max(1, Math.floor(count)) : 512;
+    const clean = [];
+    for (const p of points) {
+      if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y)) continue;
+      const last = clean[clean.length - 1];
+      if (!last || Math.hypot(p.x - last.x, p.y - last.y) > 1e-12) clean.push({ x: p.x, y: p.y });
+    }
+    if (!clean.length) return [];
+    if (clean.length > 1 && Math.hypot(clean[0].x - clean[clean.length - 1].x,
+      clean[0].y - clean[clean.length - 1].y) < 1e-12) clean.pop();
+    const cumulative = [0];
+    for (let i = 0; i < clean.length; i++) {
+      const a = clean[i], b = clean[(i + 1) % clean.length];
+      cumulative.push(cumulative[i] + Math.hypot(b.x - a.x, b.y - a.y));
+    }
+    const total = cumulative[cumulative.length - 1];
+    if (total < 1e-12) return Array.from({ length: count }, () => ({ ...clean[0] }));
+    let segment = 0;
+    return Array.from({ length: count }, (_, i) => {
+      const distance = total * i / count;
+      while (segment < clean.length - 1 && cumulative[segment + 1] <= distance) segment++;
+      const a = clean[segment], b = clean[(segment + 1) % clean.length];
+      const weight = (distance - cumulative[segment]) / (cumulative[segment + 1] - cumulative[segment]);
+      return { x: a.x + (b.x - a.x) * weight, y: a.y + (b.y - a.y) * weight };
+    });
+  }
+
+  function dft(points) {
+    const n = points.length, terms = [];
+    for (const p of points) {
+      if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y)) throw new TypeError('DFT 采样点必须是有限的 x、y 坐标');
+    }
+    for (let k = 0; k < n; k++) {
+      let re = 0, im = 0;
+      for (let j = 0; j < n; j++) {
+        const angle = TAU * k * j / n, c = Math.cos(angle), s = Math.sin(angle);
+        re += points[j].x * c + points[j].y * s;
+        im += points[j].y * c - points[j].x * s;
+      }
+      re /= n; im /= n;
+      terms.push({ frequency: k > n / 2 ? k - n : k,
+        re, im, amplitude: Math.hypot(re, im), phase: Math.atan2(im, re) });
+    }
+    return terms.sort((a, b) => b.amplitude - a.amplitude || a.frequency - b.frequency);
+  }
+
+  function evaluateComplex(terms, t, count) {
+    let x = 0, y = 0;
+    const n = limit(count, terms.length);
+    for (let i = 0; i < n; i++) {
+      const term = terms[i], angle = term.frequency * t + term.phase;
+      x += term.amplitude * Math.cos(angle);
+      y += term.amplitude * Math.sin(angle);
+    }
+    return { x, y };
+  }
+
+  return { TAU, waveValue, waveComponents, evaluateReal, resampleClosed, dft, evaluateComplex };
+});
+
+</script>
+<script>
+(() => {
+'use strict';
+const F=window.FourierMath, TAU=F.TAU, $=id=>document.getElementById(id);
+const stage=$('stage'), spectrum=$('spectrum'), ctx=stage.getContext('2d'), sctx=spectrum.getContext('2d');
+const C={blue:'#002fa7',ink:'#17191e',muted:'#7b8290',grid:'#eef0f4',axis:'#cbd0da',faint:'#c9d4ed',target:'#a3aab6',white:'#ffffff'};
+const names={square:'方波',saw:'锯齿波',triangle:'三角波',pulse:'脉冲波'}, shapeNames={heart:'心形',star:'五角星',cat:'猫咪轮廓',custom:'手绘轮廓'};
+const state={mode:'wave',wave:'square',shape:'heart',waveCount:5,drawCount:36,frequency:.5,speed:1,progress:.13,playing:!matchMedia('(prefers-reduced-motion: reduce)').matches,circles:true,target:true,components:true,drawing:false,stroke:[],points:[],drawTerms:[],dc:{x:0,y:0},curve:[],waveModel:null,spectrumBars:[],lastTime:0,dirty:true,frame:0};
+let size={w:0,h:0}, specSize={w:0,h:0};
+function announce(message){$('status').textContent=message}
+function line(g,x1,y1,x2,y2,color=C.grid,width=1,dash=[]){g.beginPath();g.strokeStyle=color;g.lineWidth=width;g.setLineDash(dash);g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.setLineDash([])}
+function text(g,t,x,y,opts={}){g.font=(opts.size||10)+'px "Helvetica Neue",Arial,"Microsoft YaHei",sans-serif';g.textAlign=opts.align||'left';g.fillStyle=opts.color||C.muted;g.fillText(t,x,y)}
+function path(g,points,color,width=1,dash=[]){if(!points.length)return;g.beginPath();g.strokeStyle=color;g.lineWidth=width;g.lineJoin='round';g.lineCap='round';g.setLineDash(dash);g.moveTo(points[0].x,points[0].y);for(let j=1;j<points.length;j++)g.lineTo(points[j].x,points[j].y);g.stroke();g.setLineDash([])}
+function dot(g,x,y,r=3,color=C.blue){g.beginPath();g.fillStyle=color;g.arc(x,y,r,0,TAU);g.fill()}
+function fit(canvas,g){const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);const w=Math.max(1,rect.width),h=Math.max(1,rect.height);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}g.setTransform(dpr,0,0,dpr,0,0);return {w,h}}
+function resize(){size=fit(stage,ctx);specSize=fit(spectrum,sctx);state.dirty=true;render();drawSpectrum();drawHarmonics()}
+function getTerms(){return state.mode==='wave'?state.waveModel.terms.slice(0,state.waveCount):state.drawTerms.slice(0,state.drawCount)}
+function makeShape(type){const p=[];if(type==='heart'){for(let j=0;j<600;j++){const t=j/600*TAU;p.push({x:16*Math.sin(t)**3/18,y:-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))/18})}}else if(type==='star'){for(let j=0;j<10;j++){const t=-Math.PI/2+j*TAU/10,r=j%2?.43:1;p.push({x:r*Math.cos(t),y:r*Math.sin(t)})}}else{const segments=[[-.83,-.27,-.9,-.86,-.86,-1],[-.86,-1,-.43,-.77,-.34,-.66],[-.34,-.66,-.12,-.75,0,-.73],[0,-.73,.12,-.75,.34,-.66],[.34,-.66,.43,-.77,.86,-1],[.86,-1,.9,-.86,.83,-.27],[.83,-.27,1.1,.09,.92,.46],[.92,.46,.72,.9,0,.93],[0,.93,-.72,.9,-.92,.46],[-.92,.46,-1.1,.09,-.83,-.27]];let start={x:-.83,y:-.27};for(const a of segments){const first=start;for(let j=0;j<40;j++){const t=j/40,u=1-t;p.push({x:u*u*first.x+2*u*t*a[2]+t*t*a[4],y:u*u*first.y+2*u*t*a[3]+t*t*a[5]})}start={x:a[4],y:a[5]}}}return p}
+function setDrawingPoints(points){state.points=F.resampleClosed(points,256);const all=F.dft(state.points),dc=all.find(t=>t.frequency===0);state.dc={x:dc?dc.re:0,y:dc?dc.im:0};state.drawTerms=all.filter(t=>t.frequency!==0);state.drawCount=Math.min(state.drawCount,state.drawTerms.length);updateCurve()}
+function updateCurve(){const terms=state.drawTerms.slice(0,state.drawCount);state.curve=[];for(let j=0;j<=1000;j++){const p=F.evaluateComplex(terms,j/1000*TAU,terms.length);state.curve.push({x:p.x+state.dc.x,y:p.y+state.dc.y})}}
+function rebuildWave(){state.waveModel=F.waveComponents(state.wave,128)}
+function updateFormula(){if(state.mode==='wave'){const n=state.waveCount;let eq;if(state.wave==='square')eq='f(t) ≈ 4/π [sin(ω₀t) + ⅓ sin(3ω₀t) + …]';else if(state.wave==='saw')eq='f(t) ≈ −2/π [sin(ω₀t) + ½ sin(2ω₀t) + …]';else if(state.wave==='triangle')eq='f(t) ≈ 8/π² [sin(ω₀t) − ⅑ sin(3ω₀t) + …]';else eq='f(t) ≈ −½ + ∑ Aₙ cos(nω₀t + φₙ)';if(n===1&&state.wave!=='pulse'){const a=state.waveModel.terms[0].amplitude;eq='f(t) ≈ '+(state.wave==='saw'?'−':'')+a.toFixed(3)+' sin(ω₀t)'}$('formula').textContent=eq;$('formula-label').textContent='当前合成式 · '+n+' 个非零谐波 · ω₀ = 2πf₀'}else{$('formula').innerHTML='z(θ) ≈ c₀ + ∑ cₖ e<sup>ikθ</sup>';$('formula-label').textContent='按幅值选取前 '+state.drawCount+' 项 · 常量 c₀ 单独保留'}}
+function updateControls(){const wave=state.mode==='wave',count=wave?state.waveCount:state.drawCount;
+$('wave-tab').setAttribute('aria-selected',String(wave));$('draw-tab').setAttribute('aria-selected',String(!wave));$('experiment').setAttribute('aria-labelledby',wave?'wave-tab':'draw-tab');$('wave-presets').hidden=!wave;$('draw-presets').hidden=wave;$('frequency-section').hidden=!wave;$('draw-actions-section').hidden=wave;$('components-toggle').hidden=!wave;$('component-legend').hidden=!wave;
+$('preset-heading').textContent=wave?'选择目标波形':'选择绘制轮廓';$('terms-label').textContent=wave?'叠加的谐波项数':'保留的旋转向量';$('terms').max=wave?'32':String(state.drawTerms.length);$('terms').value=count;$('terms-output').innerHTML=count+'<small>项</small>';$('terms-end').textContent='更多细节 · '+(wave?'32':state.drawTerms.length)+' 项';$('frequency-output').innerHTML=state.frequency.toFixed(1)+'<small>Hz</small>';
+$('stage-title').textContent=wave?'从旋转向量到'+names[state.wave]:'用旋转圆描出'+shapeNames[state.shape];$('stage-meta').textContent=wave?'1 个周期 / '+count+' 个谐波':'256 个采样点 / '+count+' 个向量';$('target-legend').textContent=wave?'目标'+names[state.wave]:'原始轮廓';$('result-legend').textContent=wave?'谐波叠加':'端点轨迹';$('side-note').textContent=wave?(state.wave==='pulse'?'脉冲占空比为 25%，均值为 −0.5。常量项决定中心高度；向量图与波形采用独立缩放。':'每个圆代表一个谐波。端点的纵向分量就是叠加值；向量图与右侧波形采用独立缩放。'):'圆按幅值从大到小首尾相连。每个圆独立旋转，最后一个端点随时间描出原始轮廓。';
+$('spectrum-title').textContent=wave?'把波形拆成频率':'轮廓的复数频谱';$('spectrum-subtitle').textContent=wave?'柱高表示幅值，蓝色表示参与合成的谐波':'按幅值排序，最多显示前 48 项；符号表示旋转方向';$('error-label').textContent=wave?'近似误差 RMS':'采样重建误差 RMS';$('harmonics-title').textContent=wave?'从这些简单的波开始':'幅值最大的旋转向量';$('harmonics-subtitle').textContent=wave?'前 4 个非零谐波 · 同一幅值比例':'前 4 项的纵向投影 · 幅值比例一致';
+document.querySelectorAll('[data-wave]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.wave===state.wave)));document.querySelectorAll('[data-shape]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shape===(state.drawing?'custom':state.shape))));updateFormula();updatePlay();updateError();state.dirty=true;drawSpectrum();drawHarmonics();render();
+}
+function updatePlay(){const paused=!state.playing;$('play').innerHTML=paused?'<svg class="fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2L14 8L4 14Z"/></svg><span>播放</span>':'<svg class="fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3H6V13H4ZM10 3H12V13H10Z"/></svg><span>暂停</span>';$('play').setAttribute('aria-label',paused?'播放动画':'暂停动画');$('play').disabled=state.drawing;$('progress').disabled=state.drawing;$('terms').disabled=state.drawing;$('cancel-draw').hidden=!state.drawing}
+function updateError(){let e=0;const terms=getTerms();if(state.mode==='wave'){for(let j=0;j<2048;j++){const t=(j+.5)/2048*TAU;const d=F.waveValue(state.wave,t)-F.evaluateReal(state.waveModel,t,state.waveCount);e+=d*d}e=Math.sqrt(e/2048)}else{for(let j=0;j<state.points.length;j++){const p=F.evaluateComplex(terms,j/state.points.length*TAU,terms.length),q=state.points[j];e+=(p.x+state.dc.x-q.x)**2+(p.y+state.dc.y-q.y)**2}e=Math.sqrt(e/state.points.length)}$('error-value').textContent=e<.0001?'< 0.0001':e.toFixed(4);state.error=e}
+function updateProgress(){const p=state.progress;$('progress').value=Math.round(p*1000);$('progress-output').textContent=Math.round(p*100)+'%';$('phase-readout').textContent=(state.mode==='wave'?'t / T':'θ / 2π')+' = '+p.toFixed(2)}
+function renderWave(){const g=ctx,{w,h}=size,stack=w<570,t=state.progress*TAU,terms=getTerms();const left=stack?w:w*.365,cx=stack?w/2:left*.49,cy=stack?112:h*.49;const dc=state.waveModel.dc,bound=terms.reduce((s,t)=>s+t.amplitude,0)+Math.abs(dc);const scale=Math.min(stack?60:left*.255,(stack?90:left*.41)/Math.max(bound,1),(stack?90:h*.36)/Math.max(bound,1));
+const plot={x:stack?38:left+29,y:stack?350:cy,width:stack?w-62:w-left-53,scale:stack?61:Math.min((h-110)/3.4,90)};
+for(let n=-1;n<=1;n++){const y=plot.y-n*plot.scale;line(g,plot.x,y,w-20,y,n===0?C.axis:C.grid);text(g,String(n),plot.x-9,y+3,{align:'right',size:9})}
+for(let k=0;k<=4;k++){const x=plot.x+k/4*plot.width;line(g,x,plot.y-1.5*plot.scale,x,plot.y+1.5*plot.scale,C.grid);text(g,k===0?'0':k===4?'T':k===2?'T/2':k+'/4 T',x,plot.y+1.5*plot.scale+17,{align:'center',size:9})}
+text(g,'归一化幅值',plot.x,plot.y-1.5*plot.scale-13,{size:9});text(g,'一个周期 T = '+(1/state.frequency).toFixed(1)+' s',plot.x+plot.width,plot.y+1.5*plot.scale+35,{align:'right',size:9});
+const target=[],components=[];for(let j=0;j<=500;j++){const a=j/500*TAU;target.push({x:plot.x+j/500*plot.width,y:plot.y-F.waveValue(state.wave,a)*plot.scale})}if(state.target)path(g,target,C.target,1,[4,4]);
+if(state.components){for(const term of terms.slice(0,8)){components.length=0;for(let j=0;j<=400;j++){const a=j/400*TAU;components.push({x:plot.x+j/400*plot.width,y:plot.y-term.amplitude*Math.cos(term.frequency*a+term.phase)*plot.scale})}path(g,components,C.faint,.8)}}
+const traced=[],steps=Math.max(1,Math.ceil(state.progress*600));for(let j=0;j<=steps;j++){const p=j/steps*state.progress;traced.push({x:plot.x+p*plot.width,y:plot.y-F.evaluateReal(state.waveModel,p*TAU,state.waveCount)*plot.scale})}path(g,traced,C.blue,2.4);
+line(g,cx-(stack?104:left*.43),cy,cx+(stack?104:left*.43),cy,C.grid);line(g,cx,cy-(stack?104:h*.37),cx,cy+(stack?104:h*.37),C.grid);
+let x=cx,y=cy-dc*scale;dot(g,x,y,2,C.target);
+for(let j=0;j<terms.length;j++){const term=terms[j],a=term.frequency*t+term.phase,r=term.amplitude*scale;if(state.circles&&r>.3){g.beginPath();g.strokeStyle=j===0?'#c2ccec':'#d8dfef';g.lineWidth=.85;g.arc(x,y,r,0,TAU);g.stroke()}const nx=x+Math.sin(a)*r,ny=y-Math.cos(a)*r;line(g,x,y,nx,ny,j===0?C.blue:'#829bd1',j<3?1.2:.9);x=nx;y=ny;if(j<12)dot(g,x,y,1.7,j===terms.length-1?C.blue:'#91a7d7')}
+dot(g,x,y,3);const tx=plot.x+state.progress*plot.width,ty=plot.y-F.evaluateReal(state.waveModel,t,state.waveCount)*plot.scale;
+if(stack){path(g,[{x,y},{x:tx,y:cy+110},{x:tx,y:ty}], '#a9b9db',.8,[4,4]);text(g,'旋转向量',18,26,{size:10,color:C.blue});text(g,'取纵向分量，沿时间展开',w/2,223,{align:'center',size:10})}else{path(g,[{x,y},{x:plot.x-12,y},{x:plot.x-12,y:ty},{x:tx,y:ty}],'#9eafd5',.8,[4,4]);text(g,'旋转与叠加 · 独立缩放',cx,31,{align:'center',size:10,color:C.blue});text(g,'端点的纵向分量 → 波形',plot.x+plot.width/2,31,{align:'center',size:10,color:C.blue})}
+line(g,tx,plot.y-1.4*plot.scale,tx,plot.y+1.4*plot.scale,'#9db1dd',.8,[3,4]);dot(g,tx,ty,4);g.beginPath();g.strokeStyle='#c6d4f2';g.lineWidth=1;g.arc(tx,ty,8,0,TAU);g.stroke();
+}
+function drawTransform(){const {w,h}=size;const radius=Math.max(...state.points.map(p=>Math.hypot(p.x,p.y)),1);const extent=state.drawTerms.slice(0,state.drawCount).reduce((s,t)=>s+t.amplitude,0);const bound=state.circles?Math.max(radius*1.15,extent+Math.hypot(state.dc.x,state.dc.y)):radius*1.13;return {cx:w/2,cy:h/2+3,scale:Math.min(w-65,h-45)/(2*bound)}}
+function renderDrawing(){const g=ctx,{w,h}=size;for(let x=30;x<w;x+=35)line(g,x,22,x,h-20,C.grid);for(let y=30;y<h;y+=35)line(g,20,y,w-20,y,C.grid);if(state.drawing){text(g,'在这里画一笔',w/2,h/2,{align:'center',size:state.stroke.length?10:17,color:state.stroke.length?'#c2c8d4':C.muted});path(g,state.stroke,C.blue,2.2);return}
+const tr=drawTransform(),map=p=>({x:tr.cx+p.x*tr.scale,y:tr.cy+p.y*tr.scale});if(state.target)path(g,[...state.points,state.points[0]].map(map),C.target,1,[4,4]);
+const partial=state.curve.slice(0,Math.max(1,Math.floor(state.progress*1000)+1));if(state.progress>0)partial.push({...F.evaluateComplex(getTerms(),state.progress*TAU,getTerms().length),_last:true});if(partial.length&&partial[partial.length-1]._last){partial[partial.length-1].x+=state.dc.x;partial[partial.length-1].y+=state.dc.y}path(g,partial.map(map),C.blue,2.2);
+let x=tr.cx+state.dc.x*tr.scale,y=tr.cy+state.dc.y*tr.scale;dot(g,x,y,2,C.target);for(const term of getTerms()){const r=term.amplitude*tr.scale,a=term.frequency*state.progress*TAU+term.phase;if(state.circles&&r>.25){g.beginPath();g.strokeStyle='#c6d1eb';g.lineWidth=.8;g.arc(x,y,r,0,TAU);g.stroke()}const nx=x+r*Math.cos(a),ny=y+r*Math.sin(a);line(g,x,y,nx,ny,'#8aa0d0',.85);x=nx;y=ny}dot(g,x,y,3.8);g.beginPath();g.strokeStyle='#bcccf0';g.arc(x,y,8,0,TAU);g.stroke();text(g,'z = x + iy',22,29,{size:11,color:C.blue});text(g,'θ = '+(state.progress*TAU).toFixed(2)+' rad',w-22,29,{align:'right',size:10});text(g,'屏幕纵坐标向下为正',22,h-16,{size:9});
+}
+function render(){if(!size.w)return;ctx.clearRect(0,0,size.w,size.h);ctx.fillStyle=C.white;ctx.fillRect(0,0,size.w,size.h);if(state.mode==='wave')renderWave();else renderDrawing();updateProgress();state.dirty=false}
+function spectrumItems(){if(state.mode==='wave'){const limit=getTerms().at(-1).frequency;const max=Math.max(15,Math.min(128,limit));return state.waveModel.terms.filter(t=>t.frequency<=max).map((t,j)=>({...t,selected:j<state.waveCount,label:(t.frequency*state.frequency).toFixed(1)}))}return state.drawTerms.slice(0,Math.max(16,Math.min(state.drawCount+5,48))).map((t,j)=>({...t,selected:j<state.drawCount,label:String(t.frequency)}))}
+function drawSpectrum(){if(!specSize.w||!state.waveModel)return;const g=sctx,{w,h}=specSize;g.clearRect(0,0,w,h);const items=spectrumItems(),left=34,right=w-12,top=26,bottom=h-29,peak=Math.max(...items.map(t=>t.amplitude),.1)*1.12;
+for(let j=0;j<=2;j++){const y=bottom-j/2*(bottom-top);line(g,left,y,right,y,j===0?C.axis:C.grid);text(g,(j/2*peak).toFixed(1),left-8,y+3,{align:'right',size:9})}text(g,'幅值',left,12,{size:9});text(g,state.mode==='wave'?'频率 / Hz':'频率 k / 转·周期⁻¹',right,h-2,{align:'right',size:9});
+state.spectrumBars=[];const wave=state.mode==='wave',maxFrequency=Math.max(...items.map(t=>t.frequency),1),pitch=(right-left)/(wave?maxFrequency+1:Math.max(items.length,1)),bw=Math.max(2,Math.min(13,pitch*.46)),every=Math.max(1,Math.ceil(items.length/(w<360?7:12)));items.forEach((t,j)=>{const x=wave?left+t.frequency*pitch:left+(j+.5)*pitch,y=bottom-t.amplitude/peak*(bottom-top);g.fillStyle=t.selected?C.blue:'#e0e5f1';g.fillRect(x-bw/2,y,bw,bottom-y);if(j%every===0)text(g,t.label,x,bottom+14,{align:'center',size:9});state.spectrumBars.push({x,y,pitch,term:t})});
+if(state.mode==='wave'&&state.wave==='pulse'){text(g,'另含直流 −0.5',right,12,{align:'right',size:9})}else if(state.mode==='draw'){text(g,'常量 c₀ 单独保留',right,12,{align:'right',size:9})}}
+function drawHarmonics(){if(!state.waveModel)return;const list=(state.mode==='wave'?state.waveModel.terms:state.drawTerms).slice(0,4),active=getTerms().length;const box=$('harmonics');box.replaceChildren();for(let j=0;j<list.length;j++){const term=list[j],row=document.createElement('div');row.className='harmonic-row';const cap=document.createElement('div');cap.className='harmonic-caption';cap.innerHTML='<b>'+(state.mode==='wave'?(term.frequency*state.frequency).toFixed(1)+' Hz':'k = '+term.frequency+' 转 / 周期')+'</b><br>A = '+term.amplitude.toFixed(4)+(j>=active?' · 未加入':'');const canvas=document.createElement('canvas');canvas.className='harmonic-mini';canvas.setAttribute('role','img');canvas.setAttribute('aria-label','第'+(j+1)+'项，幅值'+term.amplitude.toFixed(4));row.append(cap,canvas);box.append(row);const g=canvas.getContext('2d'),r=fit(canvas,g),p=[],scale=13/Math.max(...list.map(t=>t.amplitude));line(g,0,r.h/2,r.w,r.h/2,C.grid);for(let m=0;m<=220;m++){const a=m/220*TAU;p.push({x:m/220*r.w,y:r.h/2-(state.mode==='wave'?Math.cos(term.frequency*a+term.phase):Math.sin(term.frequency*a+term.phase))*term.amplitude*scale})}path(g,p,j<active?C.blue:'#c6d1e9',1.2)}}
+function setMode(mode){if(state.drawing)cancelDraw();state.mode=mode;state.progress=0;state.lastTime=0;updateControls();announce(mode==='wave'?'已切换到波形合成':'已切换到旋转圆绘图')}
+function startDraw(){if(state.drawing)return;state.mode='draw';state.drawing=true;state.stroke=[];state.wasPlaying=state.playing;state.playing=false;$('stage-wrap').classList.add('drawing');state.progress=0;updateControls();announce('请在画布上画一笔，松开后计算傅里叶系数')}
+function cancelDraw(){drawingPointer=null;state.drawing=false;state.stroke=[];$('stage-wrap').classList.remove('drawing');state.playing=state.wasPlaying;updateControls()}
+function pointerPoint(e){const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+let drawingPointer=null;
+stage.addEventListener('pointerdown',e=>{if(!state.drawing||drawingPointer!==null)return;e.preventDefault();drawingPointer=e.pointerId;stage.setPointerCapture(e.pointerId);state.stroke=[pointerPoint(e)];state.dirty=true});
+stage.addEventListener('pointermove',e=>{if(!state.drawing||e.pointerId!==drawingPointer)return;e.preventDefault();const p=pointerPoint(e),q=state.stroke[state.stroke.length-1];if(!q||Math.hypot(p.x-q.x,p.y-q.y)>1.5){state.stroke.push(p);state.dirty=true}});
+function finishDraw(e){if(!state.drawing||e.pointerId!==drawingPointer)return;drawingPointer=null;const p=state.stroke;if(p.length<8){state.stroke=[];state.dirty=true;announce('轨迹过短，请画出更完整的轮廓');return}const xs=p.map(a=>a.x),ys=p.map(a=>a.y),minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys),extent=Math.max(maxx-minx,maxy-miny);if(extent<20){state.stroke=[];state.dirty=true;announce('轮廓太小，请画大一些');return}const cx=(minx+maxx)/2,cy=(miny+maxy)/2;state.shape='custom';setDrawingPoints(p.map(a=>({x:(a.x-cx)/extent*2,y:(a.y-cy)/extent*2})));state.drawing=false;state.stroke=[];state.progress=0;state.playing=true;$('stage-wrap').classList.remove('drawing');updateControls();announce('已完成 256 点 DFT，开始重绘你的轮廓')}
+stage.addEventListener('pointerup',finishDraw);stage.addEventListener('lostpointercapture',e=>{if(e.pointerId===drawingPointer){drawingPointer=null;state.stroke=[];state.dirty=true}});stage.addEventListener('pointercancel',e=>{if(e.pointerId===drawingPointer){drawingPointer=null;state.stroke=[];state.dirty=true;announce('绘制已中断，可以重新画一笔')}});
+$('wave-tab').addEventListener('click',()=>setMode('wave'));$('draw-tab').addEventListener('click',()=>setMode('draw'));
+for(const b of document.querySelectorAll('[data-wave]'))b.addEventListener('click',()=>{state.wave=b.dataset.wave;state.progress=0;rebuildWave();updateControls();announce('已选择'+names[state.wave])});
+for(const b of document.querySelectorAll('[data-shape]'))b.addEventListener('click',()=>{if(b.dataset.shape==='custom'){startDraw();return}if(state.drawing)cancelDraw();state.shape=b.dataset.shape;setDrawingPoints(makeShape(state.shape));state.progress=0;updateControls();announce('已选择'+shapeNames[state.shape])});
+$('terms').addEventListener('input',e=>{if(state.mode==='wave')state.waveCount=Number(e.target.value);else{state.drawCount=Number(e.target.value);updateCurve()}updateControls()});$('terms').addEventListener('change',()=>announce('当前保留 '+getTerms().length+' 项，重建误差 '+$('error-value').textContent));
+$('frequency').addEventListener('input',e=>{state.frequency=Number(e.target.value);updateControls()});$('speed').addEventListener('change',e=>{state.speed=Number(e.target.value)});
+for(const [id,key] of [['show-circles','circles'],['show-target','target'],['show-components','components']])$(id).addEventListener('change',e=>{state[key]=e.target.checked;state.dirty=true;render()});
+$('play').addEventListener('click',()=>{state.playing=!state.playing;state.lastTime=0;updatePlay();announce(state.playing?'动画播放中':'动画已暂停')});$('restart').addEventListener('click',()=>{state.progress=0;state.lastTime=0;state.dirty=true;render();announce('已回到周期起点')});$('progress').addEventListener('input',e=>{state.progress=Number(e.target.value)/1000;state.playing=false;updatePlay();render()});$('redraw').addEventListener('click',startDraw);$('cancel-draw').addEventListener('click',cancelDraw);
+document.querySelector('.tabs').addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const mode=e.key==='Home'?'wave':e.key==='End'?'draw':state.mode==='wave'?'draw':'wave';setMode(mode);$(mode+'-tab').focus()}});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!/INPUT|SELECT|TEXTAREA|BUTTON/.test(document.activeElement.tagName)&&!state.drawing){e.preventDefault();$('play').click()}if(e.key==='Escape'&&state.drawing)cancelDraw()});
+$('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen()}else announce('此浏览器不支持全屏，请使用浏览器的全屏功能')}catch(e){announce('全屏未启用，可使用浏览器的全屏功能')}});document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'退出全屏':'全屏演示';resize()});
+$('save').addEventListener('click',()=>{render();const out=document.createElement('canvas'),dpr=2;out.width=Math.round(size.w*dpr);out.height=Math.round((size.h+75)*dpr);const g=out.getContext('2d');g.scale(dpr,dpr);g.fillStyle='white';g.fillRect(0,0,size.w,size.h+75);text(g,'傅里叶实验室 · '+$('stage-title').textContent,20,27,{size:14,color:C.ink});g.drawImage(stage,0,40,size.w,size.h);text(g,getTerms().length+' 项  /  进度 '+Math.round(state.progress*100)+'%  /  RMS '+$('error-value').textContent,20,size.h+61,{size:10});const a=document.createElement('a');a.download='fourier-'+state.mode+'.png';a.href=out.toDataURL('image/png');a.click();announce('当前画面已保存为 PNG')});
+function inspectSpectrum(e){const r=spectrum.getBoundingClientRect(),x=e.clientX-r.left;const bar=state.spectrumBars.reduce((a,b)=>!a||Math.abs(b.x-x)<Math.abs(a.x-x)?b:a,null);if(!bar)return;const t=bar.term;$('spectrum-detail').textContent=(state.mode==='wave'?'频率 '+(t.frequency*state.frequency).toFixed(2)+' Hz':'频率 k = '+t.frequency+' 转 / 周期')+' · 幅值 '+t.amplitude.toFixed(5)+' · 相位 '+t.phase.toFixed(3)+' rad · '+(t.selected?'已参与合成':'未参与合成')}
+spectrum.addEventListener('pointermove',inspectSpectrum);spectrum.addEventListener('pointerdown',inspectSpectrum);
+function tick(now){if(state.lastTime&&state.playing&&!state.drawing&&!document.hidden){const dt=Math.min((now-state.lastTime)/1000,.06),rate=state.mode==='wave'?state.frequency:.13;state.progress=(state.progress+dt*rate*state.speed)%1;state.dirty=true}state.lastTime=now;if(state.dirty)render();requestAnimationFrame(tick)}
+document.addEventListener('visibilitychange',()=>{state.lastTime=0});
+rebuildWave();setDrawingPoints(makeShape('heart'));resize();updateControls();new ResizeObserver(()=>resize()).observe(stage.parentElement);window.addEventListener('resize',resize);requestAnimationFrame(tick);
+window.FourierLab={state,setMode,render,updateControls,getTerms,setDrawingPoints};
+})();
+</script>
+</body>
+</html>
